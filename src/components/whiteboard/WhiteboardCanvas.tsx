@@ -5,31 +5,17 @@ import * as fabric from 'fabric';
 import {
   Pen,
   Eraser,
+  Type,
+  StickyNote,
   Square,
   Circle,
-  Type,
-  Image as ImageIcon,
   Undo,
   Redo,
-  Save,
-  Share,
-  Settings,
-  Sparkles,
-  StickyNote,
-  Ruler,
-  GitBranch,
-  Palette,
-  Layers,
   Download,
-  Upload,
-  Trash2,
-  RotateCcw,
-  RotateCw,
-  Move,
+  LogOut,
   MousePointer
 } from 'lucide-react';
 import { WhiteboardTemplate, WhiteboardElement } from '@/lib/ai-service';
-import AIPromptModal from '@/components/ai/AIPromptModal';
 
 interface WhiteboardCanvasProps {
   initialData?: any;
@@ -37,6 +23,7 @@ interface WhiteboardCanvasProps {
   onShare?: () => void;
   isCollaborative?: boolean;
   template?: WhiteboardTemplate;
+  onEndSession?: () => void;
 }
 
 const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
@@ -44,21 +31,18 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
   onSave,
   onShare,
   isCollaborative = false,
-  template
+  template,
+  onEndSession
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
-  const [currentTool, setCurrentTool] = useState<'pen' | 'eraser' | 'select' | 'shape' | 'text' | 'sticky' | 'ruler' | 'move'>('select');
-  const [selectedShape, setSelectedShape] = useState<'rectangle' | 'circle' | 'line' | 'triangle' | 'diamond'>('rectangle');
+  const [currentTool, setCurrentTool] = useState<'pen' | 'eraser' | 'select' | 'text' | 'sticky' | 'shape'>('select');
+  const [selectedShape, setSelectedShape] = useState<'rectangle' | 'circle'>('rectangle');
   const [color, setColor] = useState('#000000');
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [brushSize, setBrushSize] = useState(5);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [showAIModal, setShowAIModal] = useState(false);
-  const [showColorPicker, setShowColorPicker] = useState(false);
-  const [showShapePicker, setShowShapePicker] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [showShapePicker, setShowShapePicker] = useState(false);
 
   // Initialize canvas
   useEffect(() => {
@@ -67,7 +51,7 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     const canvas = new fabric.Canvas(canvasRef.current, {
       width: window.innerWidth - 100,
       height: window.innerHeight - 200,
-      backgroundColor: backgroundColor,
+      backgroundColor: '#ffffff',
       selection: true,
       preserveObjectStacking: true,
       enableRetinaScaling: true,
@@ -76,9 +60,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     fabricCanvasRef.current = canvas;
 
     // Set up event listeners
-    canvas.on('mouse:down', handleMouseDown);
-    canvas.on('mouse:move', handleMouseMove);
-    canvas.on('mouse:up', handleMouseUp);
     canvas.on('object:added', handleObjectAdded);
     canvas.on('object:modified', handleObjectModified);
     canvas.on('object:removed', handleObjectRemoved);
@@ -110,7 +91,7 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
       window.removeEventListener('resize', handleResize);
       canvas.dispose();
     };
-  }, [initialData, template, backgroundColor]);
+  }, [initialData, template]);
 
   // Apply AI template
   const applyTemplate = (template: WhiteboardTemplate) => {
@@ -122,12 +103,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     // Set background
     if (template.backgroundColor) {
       fabricCanvasRef.current.backgroundColor = template.backgroundColor;
-      setBackgroundColor(template.backgroundColor);
-    }
-
-    // Add grid if specified
-    if (template.grid) {
-      addGrid();
     }
 
     // Add template elements
@@ -153,9 +128,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
           fontSize: element.style?.fontSize || 20,
           fontFamily: element.style?.fontFamily || 'Arial',
           fill: element.style?.fill || '#000000',
-          backgroundColor: element.style?.backgroundColor,
-          borderColor: element.style?.borderColor,
-          borderRadius: element.style?.borderRadius,
         });
         break;
 
@@ -169,8 +141,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
             fill: element.style?.fill || '#ffffff',
             stroke: element.style?.stroke || '#000000',
             strokeWidth: element.style?.strokeWidth || 2,
-            rx: element.style?.borderRadius,
-            ry: element.style?.borderRadius,
           });
         } else {
           fabricObject = new fabric.Circle({
@@ -196,55 +166,11 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
         });
         break;
 
-      case 'sticky':
-        fabricObject = new fabric.Rect({
-          left: element.position.x,
-          top: element.position.y,
-          width: element.size?.width || 150,
-          height: element.size?.height || 100,
-          fill: element.style?.backgroundColor || '#fef3c7',
-          stroke: element.style?.borderColor || '#f59e0b',
-          strokeWidth: element.style?.strokeWidth || 1,
-          rx: element.style?.borderRadius || 8,
-          ry: element.style?.borderRadius || 8,
-        });
-        break;
-
       default:
         return;
     }
 
     fabricCanvasRef.current.add(fabricObject);
-  };
-
-  // Add grid
-  const addGrid = () => {
-    if (!fabricCanvasRef.current) return;
-
-    const canvas = fabricCanvasRef.current;
-    const width = canvas.getWidth();
-    const height = canvas.getHeight();
-    const gridSize = 20;
-
-    for (let i = 0; i < width; i += gridSize) {
-      const line = new fabric.Line([i, 0, i, height], {
-        stroke: '#e5e7eb',
-        strokeWidth: 1,
-        selectable: false,
-        evented: false,
-      });
-      canvas.add(line);
-    }
-
-    for (let i = 0; i < height; i += gridSize) {
-      const line = new fabric.Line([0, i, width, i], {
-        stroke: '#e5e7eb',
-        strokeWidth: 1,
-        selectable: false,
-        evented: false,
-      });
-      canvas.add(line);
-    }
   };
 
   // History management
@@ -263,132 +189,47 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
   const handleObjectModified = () => saveToHistory();
   const handleObjectRemoved = () => saveToHistory();
 
-  // Tool handlers
-  const handleMouseDown = useCallback((e: any) => {
-    if (currentTool === 'pen' && fabricCanvasRef.current) {
-      setIsDrawing(true);
-      fabricCanvasRef.current.isDrawingMode = true;
-      if (fabricCanvasRef.current.freeDrawingBrush) {
-        fabricCanvasRef.current.freeDrawingBrush.width = brushSize;
-        fabricCanvasRef.current.freeDrawingBrush.color = color;
-      }
-    } else if (currentTool === 'eraser' && fabricCanvasRef.current) {
-      setIsDrawing(true);
-      fabricCanvasRef.current.isDrawingMode = true;
-      if (fabricCanvasRef.current.freeDrawingBrush) {
-        fabricCanvasRef.current.freeDrawingBrush.width = 20;
-        fabricCanvasRef.current.freeDrawingBrush.color = 'rgba(255,255,255,1)';
-      }
-    }
-  }, [currentTool, brushSize, color]);
-
-  const handleMouseMove = useCallback((e: any) => {
-    // Drawing is handled automatically by Fabric.js
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    if (currentTool === 'pen' || currentTool === 'eraser') {
-      setIsDrawing(false);
-    }
-  }, [currentTool]);
-
   // Tool selection handlers
-  const selectTool = (tool: 'pen' | 'eraser' | 'select' | 'shape' | 'text' | 'sticky' | 'ruler' | 'move') => {
+  const selectTool = (tool: 'pen' | 'eraser' | 'select' | 'text' | 'sticky' | 'shape') => {
     setCurrentTool(tool);
     if (fabricCanvasRef.current) {
       if (tool === 'pen') {
         fabricCanvasRef.current.isDrawingMode = true;
         fabricCanvasRef.current.selection = false;
-        if (fabricCanvasRef.current.freeDrawingBrush) {
-          fabricCanvasRef.current.freeDrawingBrush.width = brushSize;
-          fabricCanvasRef.current.freeDrawingBrush.color = color;
-        }
+        // Create a new brush for drawing
+        const brush = new fabric.PencilBrush(fabricCanvasRef.current);
+        brush.width = brushSize;
+        brush.color = color;
+        fabricCanvasRef.current.freeDrawingBrush = brush;
       } else if (tool === 'eraser') {
         fabricCanvasRef.current.isDrawingMode = true;
         fabricCanvasRef.current.selection = false;
-        if (fabricCanvasRef.current.freeDrawingBrush) {
-          fabricCanvasRef.current.freeDrawingBrush.width = 20;
-          fabricCanvasRef.current.freeDrawingBrush.color = 'rgba(255,255,255,1)';
-        }
-      } else if (tool === 'select') {
-        fabricCanvasRef.current.isDrawingMode = false;
-        fabricCanvasRef.current.selection = true;
+        // Create a white brush for erasing
+        const brush = new fabric.PencilBrush(fabricCanvasRef.current);
+        brush.width = brushSize * 2;
+        brush.color = 'rgba(255,255,255,1)';
+        fabricCanvasRef.current.freeDrawingBrush = brush;
       } else {
         fabricCanvasRef.current.isDrawingMode = false;
-        fabricCanvasRef.current.selection = false;
+        fabricCanvasRef.current.selection = true;
       }
     }
   };
 
-  const addShape = () => {
-    if (!fabricCanvasRef.current) return;
-
-    let shape: fabric.Object;
-    const left = 100;
-    const top = 100;
-
-    switch (selectedShape) {
-      case 'rectangle':
-        shape = new fabric.Rect({
-          left,
-          top,
-          width: 100,
-          height: 100,
-          fill: color,
-          stroke: color,
-          strokeWidth: 2,
-        });
-        break;
-      case 'circle':
-        shape = new fabric.Circle({
-          left,
-          top,
-          radius: 50,
-          fill: color,
-          stroke: color,
-          strokeWidth: 2,
-        });
-        break;
-      case 'triangle':
-        shape = new fabric.Triangle({
-          left,
-          top,
-          width: 100,
-          height: 100,
-          fill: color,
-          stroke: color,
-          strokeWidth: 2,
-        });
-        break;
-      case 'diamond':
-        shape = new fabric.Polygon([
-          { x: 0, y: 50 },
-          { x: 50, y: 0 },
-          { x: 100, y: 50 },
-          { x: 50, y: 100 }
-        ], {
-          left,
-          top,
-          fill: color,
-          stroke: color,
-          strokeWidth: 2,
-        });
-        break;
-      case 'line':
-        shape = new fabric.Line([left, top, left + 100, top + 100], {
-          stroke: color,
-          strokeWidth: brushSize,
-        });
-        break;
-      default:
-        return;
+  // Update brush when color or size changes
+  useEffect(() => {
+    if (fabricCanvasRef.current && fabricCanvasRef.current.freeDrawingBrush) {
+      if (currentTool === 'pen') {
+        fabricCanvasRef.current.freeDrawingBrush.width = brushSize;
+        fabricCanvasRef.current.freeDrawingBrush.color = color;
+      } else if (currentTool === 'eraser') {
+        fabricCanvasRef.current.freeDrawingBrush.width = brushSize * 2;
+        fabricCanvasRef.current.freeDrawingBrush.color = 'rgba(255,255,255,1)';
+      }
     }
+  }, [currentTool, brushSize, color]);
 
-    fabricCanvasRef.current.add(shape);
-    fabricCanvasRef.current.setActiveObject(shape);
-    fabricCanvasRef.current.renderAll();
-  };
-
+  // Add text
   const addText = () => {
     if (!fabricCanvasRef.current) return;
 
@@ -404,6 +245,7 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     fabricCanvasRef.current.renderAll();
   };
 
+  // Add sticky note
   const addStickyNote = () => {
     if (!fabricCanvasRef.current) return;
 
@@ -424,13 +266,43 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     fabricCanvasRef.current.renderAll();
   };
 
-  const clearCanvas = () => {
-    if (fabricCanvasRef.current) {
-      fabricCanvasRef.current.clear();
-      fabricCanvasRef.current.backgroundColor = backgroundColor;
-      fabricCanvasRef.current.renderAll();
-      saveToHistory();
+  // Add shape
+  const addShape = () => {
+    if (!fabricCanvasRef.current) return;
+
+    let shape: fabric.Object;
+    const left = 100;
+    const top = 100;
+
+    switch (selectedShape) {
+      case 'rectangle':
+        shape = new fabric.Rect({
+          left,
+          top,
+          width: 100,
+          height: 100,
+          fill: 'transparent',
+          stroke: color,
+          strokeWidth: 2,
+        });
+        break;
+      case 'circle':
+        shape = new fabric.Circle({
+          left,
+          top,
+          radius: 50,
+          fill: 'transparent',
+          stroke: color,
+          strokeWidth: 2,
+        });
+        break;
+      default:
+        return;
     }
+
+    fabricCanvasRef.current.add(shape);
+    fabricCanvasRef.current.setActiveObject(shape);
+    fabricCanvasRef.current.renderAll();
   };
 
   const undo = () => {
@@ -451,34 +323,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     }
   };
 
-  const saveCanvas = () => {
-    if (fabricCanvasRef.current && onSave) {
-      const data = fabricCanvasRef.current.toJSON();
-      onSave(data);
-    }
-  };
-
-  const handleAIGenerate = (template: WhiteboardTemplate) => {
-    applyTemplate(template);
-  };
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && fabricCanvasRef.current) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        fabric.Image.fromURL(e.target?.result as string, {
-          crossOrigin: 'anonymous'
-        }, (img: fabric.Image) => {
-          img.scaleToWidth(200);
-          fabricCanvasRef.current?.add(img);
-          fabricCanvasRef.current?.renderAll();
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const downloadCanvas = () => {
     if (!fabricCanvasRef.current) return;
 
@@ -492,6 +336,15 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     link.download = 'whiteboard.png';
     link.href = dataURL;
     link.click();
+  };
+
+  const endSession = () => {
+    if (onEndSession) {
+      onEndSession();
+    } else {
+      // Default behavior - go back to dashboard
+      window.location.href = '/dashboard';
+    }
   };
 
   return (
@@ -522,34 +375,48 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
             >
               <Eraser size={20} />
             </button>
-            <button
-              onClick={() => selectTool('move')}
-              className={`p-2 rounded ${currentTool === 'move' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
-              title="Move"
-            >
-              <Move size={20} />
-            </button>
           </div>
 
-          {/* Shapes */}
+          {/* Content Tools */}
           <div className="flex items-center space-x-2">
+            <button
+              onClick={() => {
+                selectTool('text');
+                addText();
+              }}
+              className={`p-2 rounded ${currentTool === 'text' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+              title="Add Text"
+            >
+              <Type size={20} />
+            </button>
+            <button
+              onClick={() => {
+                selectTool('sticky');
+                addStickyNote();
+              }}
+              className={`p-2 rounded ${currentTool === 'sticky' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+              title="Add Sticky Note"
+            >
+              <StickyNote size={20} />
+            </button>
             <div className="relative">
               <button
                 onClick={() => setShowShapePicker(!showShapePicker)}
-                className="p-2 rounded hover:bg-gray-100"
-                title="Shapes"
+                className={`p-2 rounded ${currentTool === 'shape' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+                title="Add Shape"
               >
                 <Square size={20} />
               </button>
               {showShapePicker && (
                 <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
                   <div className="grid grid-cols-2 gap-1">
-                    {['rectangle', 'circle', 'triangle', 'diamond', 'line'].map((shape) => (
+                    {['rectangle', 'circle'].map((shape) => (
                       <button
                         key={shape}
                         onClick={() => {
-                          setSelectedShape(shape as any);
+                          setSelectedShape(shape as 'rectangle' | 'circle');
                           setShowShapePicker(false);
+                          selectTool('shape');
                           addShape();
                         }}
                         className="p-2 hover:bg-gray-100 rounded text-sm"
@@ -561,61 +428,16 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
                 </div>
               )}
             </div>
-            <button
-              onClick={addText}
-              className="p-2 rounded hover:bg-gray-100"
-              title="Add Text"
-            >
-              <Type size={20} />
-            </button>
-            <button
-              onClick={addStickyNote}
-              className="p-2 rounded hover:bg-gray-100"
-              title="Add Sticky Note"
-            >
-              <StickyNote size={20} />
-            </button>
-            <button
-              className="p-2 rounded hover:bg-gray-100"
-              title="Add Ruler"
-            >
-              <Ruler size={20} />
-            </button>
           </div>
 
-          {/* Color Picker */}
+          {/* Color and Size Controls */}
           <div className="flex items-center space-x-2">
-            <div className="relative">
-              <button
-                onClick={() => setShowColorPicker(!showColorPicker)}
-                className="p-2 rounded hover:bg-gray-100"
-                title="Color Palette"
-              >
-                <Palette size={20} />
-              </button>
-              {showColorPicker && (
-                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
-                  <div className="grid grid-cols-6 gap-1">
-                    {['#000000', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#008000', '#ffc0cb', '#a52a2a'].map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => {
-                          setColor(color);
-                          setShowColorPicker(false);
-                        }}
-                        className="w-6 h-6 rounded border border-gray-300"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
             <input
               type="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
               className="w-8 h-8 rounded border border-gray-300"
+              title="Color"
             />
             <input
               type="range"
@@ -624,32 +446,9 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
               value={brushSize}
               onChange={(e) => setBrushSize(Number(e.target.value))}
               className="w-20"
+              title="Brush Size"
             />
-          </div>
-
-          {/* File Operations */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-              id="image-upload"
-            />
-            <label
-              htmlFor="image-upload"
-              className="p-2 rounded hover:bg-gray-100 cursor-pointer"
-              title="Upload Image"
-            >
-              <Upload size={20} />
-            </label>
-            <button
-              onClick={downloadCanvas}
-              className="p-2 rounded hover:bg-gray-100"
-              title="Download"
-            >
-              <Download size={20} />
-            </button>
+            <span className="text-sm text-gray-600 w-8">{brushSize}</span>
           </div>
         </div>
 
@@ -672,32 +471,18 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
             <Redo size={20} />
           </button>
           <button
-            onClick={() => setShowAIModal(true)}
+            onClick={downloadCanvas}
             className="p-2 rounded hover:bg-gray-100"
-            title="AI Assistant"
+            title="Export"
           >
-            <Sparkles size={20} />
+            <Download size={20} />
           </button>
           <button
-            onClick={saveCanvas}
-            className="p-2 rounded hover:bg-gray-100"
-            title="Save"
+            onClick={endSession}
+            className="p-2 rounded hover:bg-gray-100 text-red-600"
+            title="End Session"
           >
-            <Save size={20} />
-          </button>
-          <button
-            onClick={onShare}
-            className="p-2 rounded hover:bg-gray-100"
-            title="Share"
-          >
-            <Share size={20} />
-          </button>
-          <button
-            onClick={clearCanvas}
-            className="p-2 rounded hover:bg-gray-100"
-            title="Clear Canvas"
-          >
-            <Trash2 size={20} />
+            <LogOut size={20} />
           </button>
         </div>
       </div>
@@ -721,13 +506,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
           {isCollaborative && <span className="text-green-600">● Live Collaboration</span>}
         </div>
       </div>
-
-      {/* AI Modal */}
-      <AIPromptModal
-        isOpen={showAIModal}
-        onClose={() => setShowAIModal(false)}
-        onGenerate={handleAIGenerate}
-      />
     </div>
   );
 };

@@ -5,15 +5,8 @@ import { useParams } from 'next/navigation';
 import WhiteboardCanvas from '@/components/whiteboard/WhiteboardCanvas';
 import {
   ArrowLeft,
-  Save,
-  Share,
   Users,
-  Settings,
-  Sparkles,
-  MessageSquare,
-  Eye,
-  Download,
-  MoreVertical
+  Sparkles
 } from 'lucide-react';
 
 interface WhiteboardData {
@@ -92,6 +85,16 @@ const WhiteboardEditorPage = () => {
     setAiPrompt('');
   };
 
+  const handleEndSession = () => {
+    // Save current state before ending session
+    if (whiteboard) {
+      // You can implement auto-save here
+      console.log('Ending session and saving whiteboard');
+    }
+    // Navigate back to dashboard
+    window.location.href = '/dashboard';
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -138,33 +141,13 @@ const WhiteboardEditorPage = () => {
               <span>{whiteboard.collaborators.length} collaborators</span>
             </div>
 
-            {/* Action Buttons */}
-            <button
-              onClick={() => setShowCollaborators(!showCollaborators)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
-              title="Collaborators"
-            >
-              <Users className="h-5 w-5" />
-            </button>
-
+            {/* Simplified Action Buttons */}
             <button
               onClick={() => setShowAI(!showAI)}
               className="p-2 hover:bg-gray-100 rounded-lg"
               title="AI Assistant"
             >
               <Sparkles className="h-5 w-5" />
-            </button>
-
-            <button
-              onClick={handleShare}
-              className="p-2 hover:bg-gray-100 rounded-lg"
-              title="Share"
-            >
-              <Share className="h-5 w-5" />
-            </button>
-
-            <button className="p-2 hover:bg-gray-100 rounded-lg" title="More">
-              <MoreVertical className="h-5 w-5" />
             </button>
           </div>
         </div>
@@ -230,23 +213,11 @@ const WhiteboardEditorPage = () => {
           onSave={handleSave}
           onShare={handleShare}
           isCollaborative={whiteboard.collaborators.length > 1}
+          onEndSession={handleEndSession}
         />
       </div>
 
-      {/* Floating Action Button */}
-      <div className="fixed bottom-6 right-6">
-        <div className="flex flex-col space-y-2">
-          <button className="p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow">
-            <MessageSquare className="h-5 w-5 text-gray-600" />
-          </button>
-          <button className="p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow">
-            <Eye className="h-5 w-5 text-gray-600" />
-          </button>
-          <button className="p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow">
-            <Download className="h-5 w-5 text-gray-600" />
-          </button>
-        </div>
-      </div>
+
     </div>
   );
 };

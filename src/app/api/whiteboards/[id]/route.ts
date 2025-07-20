@@ -30,10 +30,11 @@ let whiteboards = [
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const whiteboard = whiteboards.find(wb => wb.id === params.id);
+        const { id } = await params;
+        const whiteboard = whiteboards.find(wb => wb.id === id);
 
         if (!whiteboard) {
             return NextResponse.json(
@@ -53,11 +54,12 @@ export async function GET(
 
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const body = await request.json();
-        const whiteboardIndex = whiteboards.findIndex(wb => wb.id === params.id);
+        const { id } = await params;
+        const whiteboardIndex = whiteboards.findIndex(wb => wb.id === id);
 
         if (whiteboardIndex === -1) {
             return NextResponse.json(
