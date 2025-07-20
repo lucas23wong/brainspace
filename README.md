@@ -202,8 +202,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 =======
 # brainspace-repo
 Interactive Whiteboard App 
-HAHA 
-Shout out to the baddies who gon be using this while drinking matcha latte
-WE gon make it out
-zTRUST 
 >>>>>>> 3f527a262f8971e8fdc87d28e9af0c3859ef03dc
