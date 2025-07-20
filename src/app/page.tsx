@@ -25,25 +25,25 @@ export default function HomePage() {
       icon: <Brain className="h-8 w-8" />,
       title: "AI-Powered Setup",
       description: "Describe your whiteboard and watch AI create the perfect layout",
-      color: "from-blue-500 to-blue-600"
+      color: "from-blue-500 to-indigo-600"
     },
     {
       icon: <Users className="h-8 w-8" />,
       title: "Real-time Collaboration",
       description: "Work together seamlessly with live updates",
-      color: "from-blue-600 to-blue-700"
+      color: "from-cyan-500 to-blue-600"
     },
     {
       icon: <Sparkles className="h-8 w-8" />,
       title: "Smart Templates",
       description: "Pre-built layouts for calendars, mind maps, and more",
-      color: "from-blue-700 to-blue-800"
+      color: "from-indigo-500 to-purple-600"
     },
     {
       icon: <Globe className="h-8 w-8" />,
       title: "Cross-Platform",
       description: "Works perfectly on desktop, tablet, and mobile",
-      color: "from-blue-800 to-blue-900"
+      color: "from-sky-500 to-blue-700"
     }
   ];
 
@@ -58,23 +58,23 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-blue-200 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
                 <Brain className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-blue-600">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
                 BrainSpace
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a>
-              <a href="#about" className="text-gray-600 hover:text-blue-600 transition-colors">About</a>
+              <a href="#pricing" className="text-gray-600 hover:text-indigo-600 transition-colors">Pricing</a>
+              <a href="#about" className="text-gray-600 hover:text-cyan-600 transition-colors">About</a>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/auth/signin" className="text-gray-600 hover:text-blue-600 transition-colors">
@@ -82,7 +82,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/auth/signup"
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all duration-200"
               >
                 Get Started
               </Link>
@@ -95,13 +95,13 @@ export default function HomePage() {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <div className="mb-8">
-            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 rounded-full text-sm font-medium mb-6">
               <Sparkles className="h-4 w-4 mr-2" />
               AI-Powered Whiteboard Platform
             </div>
             <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
               Where
-              <span className="text-blue-600"> Ideas </span>
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent"> Ideas </span>
               Come to Life
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
@@ -112,14 +112,14 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Link
               href="/dashboard"
-              className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center"
+              className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl"
             >
               Start Creating Free
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <button
               onClick={handleWatchDemo}
-              className="flex items-center px-8 py-4 border-2 border-blue-300 text-blue-700 rounded-xl text-lg font-semibold hover:bg-blue-50 transition-colors"
+              className="flex items-center px-8 py-4 border-2 border-cyan-300 text-cyan-700 rounded-xl text-lg font-semibold hover:bg-cyan-50 hover:border-cyan-400 transition-all duration-200"
             >
               <Play className="mr-2 h-5 w-5" />
               Watch Demo
@@ -131,7 +131,10 @@ export default function HomePage() {
             <div className="flex items-center">
               <div className="flex -space-x-2">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-8 h-8 bg-blue-400 rounded-full border-2 border-white"></div>
+                  <div key={i} className={`w-8 h-8 rounded-full border-2 border-white ${i === 1 ? 'bg-blue-400' :
+                      i === 2 ? 'bg-indigo-400' :
+                        i === 3 ? 'bg-cyan-400' : 'bg-sky-400'
+                    }`}></div>
                 ))}
               </div>
               <span className="ml-3 text-sm">10,000+ users</span>
@@ -161,8 +164,8 @@ export default function HomePage() {
                 onMouseEnter={() => setActiveFeature(index)}
               >
                 <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${activeFeature === index
-                  ? 'border-blue-200 bg-blue-50 shadow-lg'
-                  : 'border-gray-200 hover:border-blue-300'
+                    ? 'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-lg'
+                    : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
                   }`}>
                   <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
                     {feature.icon}
@@ -181,7 +184,7 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-blue-50">
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -191,7 +194,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-white">1</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Describe Your Vision</h3>
@@ -200,7 +203,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-700 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-white">2</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">AI Creates Setup</h3>
@@ -209,7 +212,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-white">3</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Collaborate & Create</h3>
@@ -231,7 +234,7 @@ export default function HomePage() {
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Pen className="h-4 w-4 text-blue-600" />
                   </div>
                   <div>
@@ -240,8 +243,8 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <StickyNote className="h-4 w-4 text-blue-600" />
+                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <StickyNote className="h-4 w-4 text-cyan-600" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Smart Sticky Notes</h3>
@@ -249,8 +252,8 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Ruler className="h-4 w-4 text-blue-600" />
+                  <div className="w-8 h-8 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Ruler className="h-4 w-4 text-indigo-600" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Precision Tools</h3>
@@ -258,8 +261,8 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Image className="h-4 w-4 text-blue-600" />
+                  <div className="w-8 h-8 bg-gradient-to-r from-sky-100 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Image className="h-4 w-4 text-sky-600" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Media Integration</h3>
@@ -269,7 +272,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-blue-50 rounded-2xl p-8">
+              <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50 rounded-2xl p-8">
                 <div className="bg-white rounded-xl p-6 shadow-lg">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-gray-900">AI Setup Assistant</h3>
@@ -279,11 +282,11 @@ export default function HomePage() {
                     <div className="bg-gray-50 rounded-lg p-3">
                       <p className="text-sm text-gray-600">"Create a project timeline with milestones"</p>
                     </div>
-                    <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3">
                       <p className="text-sm text-blue-800">✓ Timeline template created</p>
                     </div>
-                    <div className="bg-blue-50 rounded-lg p-3">
-                      <p className="text-sm text-blue-800">✓ Milestone markers added</p>
+                    <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg p-3">
+                      <p className="text-sm text-cyan-800">✓ Milestone markers added</p>
                     </div>
                   </div>
                 </div>
@@ -294,7 +297,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-600 text-white">
+      <section className="py-20 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 text-white">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold mb-6">
             Ready to transform your ideas?
@@ -305,7 +308,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/dashboard"
-              className="bg-white text-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-white text-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl"
             >
               Start Free Trial
             </Link>
