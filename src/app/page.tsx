@@ -1,88 +1,63 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Brain,
-  Users,
   Sparkles,
   ArrowRight,
-  Play,
+  Check,
   Star,
-  Globe,
-  Pen,
-  StickyNote,
-  Ruler,
-  Image,
-  MessageSquare
+  Zap,
+  Users,
+  Palette
 } from 'lucide-react';
 
 export default function HomePage() {
-  const [activeFeature, setActiveFeature] = useState(0);
-
-  const features = [
-    {
-      icon: <Brain className="h-8 w-8" />,
-      title: "AI-Powered Setup",
-      description: "Describe your whiteboard and watch AI create the perfect layout",
-      color: "from-blue-500 to-indigo-600"
-    },
-    {
-      icon: <Users className="h-8 w-8" />,
-      title: "Real-time Collaboration",
-      description: "Work together seamlessly with live updates",
-      color: "from-cyan-500 to-blue-600"
-    },
-    {
-      icon: <Sparkles className="h-8 w-8" />,
-      title: "Smart Templates",
-      description: "Pre-built layouts for calendars, mind maps, and more",
-      color: "from-indigo-500 to-purple-600"
-    },
-    {
-      icon: <Globe className="h-8 w-8" />,
-      title: "Cross-Platform",
-      description: "Works perfectly on desktop, tablet, and mobile",
-      color: "from-sky-500 to-blue-700"
-    }
-  ];
-
-  const handleWatchDemo = () => {
-    // TODO: Implement demo video modal or redirect
-    alert('Demo video coming soon!');
-  };
-
-  const handleScheduleDemo = () => {
-    // TODO: Implement demo scheduling
-    alert('Demo scheduling coming soon!');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-100/60 to-blue-200/40 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Shiny blue gradient orbs */}
+        <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-300/40 via-blue-400/30 to-cyan-300/25 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-gradient-to-br from-blue-200/50 via-blue-300/35 to-indigo-300/25 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 left-1/4 w-80 h-80 bg-gradient-to-br from-cyan-300/30 via-blue-400/25 to-blue-500/20 rounded-full blur-3xl"></div>
+
+        {/* Shiny noise texture */}
+        <div className="absolute inset-0 opacity-[0.02]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, #3b82f6 1px, transparent 0)`,
+          backgroundSize: '60px 60px'
+        }}></div>
+
+        {/* Shiny floating elements */}
+        <div className="absolute top-1/4 left-1/3 w-1 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full shadow-sm"></div>
+        <div className="absolute top-1/2 right-1/4 w-0.5 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-sm"></div>
+        <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-gradient-to-r from-indigo-400 to-blue-600 rounded-full shadow-sm"></div>
+      </div>
+
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-blue-200 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-blue-300/50 shadow-lg z-50">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
-                <Brain className="h-6 w-6 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Brain className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
+              <span className="text-xl font-semibold bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent">
                 BrainSpace
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-indigo-600 transition-colors">Pricing</a>
-              <a href="#about" className="text-gray-600 hover:text-cyan-600 transition-colors">About</a>
+              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">Features</a>
+              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">Pricing</a>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/auth/signin" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link href="/auth/signin" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
                 Sign In
               </Link>
               <Link
                 href="/auth/signup"
-                className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all duration-200"
+                className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-blue-400/30"
               >
                 Get Started
               </Link>
@@ -92,230 +67,199 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="pt-32 pb-20 px-6 relative">
+        {/* Shiny hero background elements */}
+        <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-blue-300/40 via-cyan-300/30 to-blue-400/25 rounded-full blur-3xl"></div>
+        <div className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-cyan-200/35 via-blue-300/25 to-indigo-300/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-1/4 w-28 h-28 bg-gradient-to-br from-indigo-300/30 via-blue-400/20 to-blue-500/15 rounded-full blur-3xl"></div>
+
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="mb-8">
-            <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 rounded-full text-sm font-medium mb-6">
-              <Sparkles className="h-4 w-4 mr-2" />
+            <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 via-cyan-100 to-blue-200 text-blue-800 rounded-full text-sm font-medium mb-6 shadow-lg border border-blue-300/50">
+              <Sparkles className="h-4 w-4 mr-2 text-blue-600" />
               AI-Powered Whiteboard Platform
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-              Where
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent"> Ideas </span>
-              Come to Life
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-blue-500 via-blue-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent">
+                Think. <span className="font-black">CREATE.</span> Collaborate.
+              </span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Transform your thoughts into stunning visual experiences.
+            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Create stunning whiteboards with AI assistance. Collaborate in real-time,
+              organize thoughts, and bring your ideas to life instantly.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Link
               href="/dashboard"
-              className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 flex items-center shadow-xl hover:shadow-2xl transform hover:scale-105 border border-blue-400/30"
             >
               Start Creating Free
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
-            <button
-              onClick={handleWatchDemo}
-              className="flex items-center px-8 py-4 border-2 border-cyan-300 text-cyan-700 rounded-xl text-lg font-semibold hover:bg-cyan-50 hover:border-cyan-400 transition-all duration-200"
-            >
-              <Play className="mr-2 h-5 w-5" />
+            <button className="flex items-center px-8 py-4 border-2 border-blue-400 text-blue-700 rounded-lg text-lg font-semibold hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 hover:border-blue-500 transition-all duration-200 shadow-lg">
+              <Zap className="mr-2 h-5 w-5" />
               Watch Demo
             </button>
           </div>
 
           {/* Social Proof */}
-          <div className="flex items-center justify-center space-x-8 text-gray-500">
+          <div className="flex items-center justify-center space-x-8 text-gray-500 text-sm">
             <div className="flex items-center">
-              <div className="flex -space-x-2">
+              <div className="flex -space-x-2 mr-3">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className={`w-8 h-8 rounded-full border-2 border-white ${i === 1 ? 'bg-blue-400' :
-                      i === 2 ? 'bg-indigo-400' :
-                        i === 3 ? 'bg-cyan-400' : 'bg-sky-400'
+                  <div key={i} className={`w-6 h-6 rounded-full border-2 border-white shadow-lg ${i === 1 ? 'bg-gradient-to-br from-blue-400 to-blue-500' :
+                    i === 2 ? 'bg-gradient-to-br from-blue-500 to-indigo-500' :
+                      i === 3 ? 'bg-gradient-to-br from-indigo-500 to-blue-600' : 'bg-gradient-to-br from-blue-600 to-cyan-600'
                     }`}></div>
                 ))}
               </div>
-              <span className="ml-3 text-sm">10,000+ users</span>
+              <span className="font-medium">10,000+ users</span>
             </div>
             <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-400 mr-1" />
-              <span className="text-sm">4.9/5 rating</span>
+              <span className="font-medium">4.9/5 rating</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section id="features" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Features Section */}
+      <section id="features" className="py-20 relative">
+        {/* Shiny features background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-100/60 via-white/90 to-cyan-100/30"></div>
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-white/50"></div>
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-transparent to-blue-200/30"></div>
+
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Everything you need to collaborate and create
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Everything you need to create and collaborate
             </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Powerful tools designed for teams and individuals who want to visualize their ideas quickly and effectively.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group cursor-pointer"
-                onMouseEnter={() => setActiveFeature(index)}
-              >
-                <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${activeFeature === index
-                    ? 'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-lg'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
-                  }`}>
-                  <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-xl border border-blue-300/50 shadow-lg hover:shadow-xl transition-all duration-200 hover:border-blue-400/70 group">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-200 via-cyan-200 to-blue-300 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                <Brain className="h-6 w-6 text-blue-600" />
               </div>
-            ))}
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                AI-Powered Setup
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Describe your whiteboard and watch AI create the perfect layout with smart templates and suggestions.
+              </p>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-xl border border-blue-300/50 shadow-lg hover:shadow-xl transition-all duration-200 hover:border-blue-400/70 group">
+              <div className="w-12 h-12 bg-gradient-to-br from-cyan-200 via-blue-300 to-indigo-300 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                <Users className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Real-time Collaboration
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Work together seamlessly with live updates, comments, and shared editing capabilities.
+              </p>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-xl border border-blue-300/50 shadow-lg hover:shadow-xl transition-all duration-200 hover:border-blue-400/70 group">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-200 via-blue-400 to-cyan-400 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                <Palette className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Advanced Tools
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Drawing tools, sticky notes, shapes, and more. Everything you need to bring your ideas to life.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative">
+        {/* Shiny how it works background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-blue-100/50 to-white"></div>
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-200/30 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent"></div>
+
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               How BrainSpace Works
             </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Get started in minutes, not hours. Our simple process makes creating beautiful whiteboards effortless.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform duration-200">
                 <span className="text-2xl font-bold text-white">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Describe Your Vision</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Describe Your Vision</h3>
               <p className="text-gray-600">
-                Tell AI what you want to create
+                Tell AI what you want to create - from project timelines to mind maps
               </p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform duration-200">
                 <span className="text-2xl font-bold text-white">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">AI Creates Setup</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Creates Setup</h3>
               <p className="text-gray-600">
-                Watch as AI generates the perfect layout
+                Watch as AI generates the perfect layout and structure for your needs
               </p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 via-blue-700 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform duration-200">
                 <span className="text-2xl font-bold text-white">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Collaborate & Create</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Collaborate & Create</h3>
               <p className="text-gray-600">
-                Invite team members and start creating
+                Invite team members and start creating together in real-time
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Feature Showcase */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                Powerful Tools for Every Need
-              </h2>
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Pen className="h-4 w-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Advanced Drawing Tools</h3>
-                    <p className="text-gray-600">Multiple pen types, colors, and thickness options</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <StickyNote className="h-4 w-4 text-cyan-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Smart Sticky Notes</h3>
-                    <p className="text-gray-600">AI-powered sticky notes that adapt to your content</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Ruler className="h-4 w-4 text-indigo-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Precision Tools</h3>
-                    <p className="text-gray-600">Rulers, grids, and measurement tools</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-sky-100 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Image className="h-4 w-4 text-sky-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Media Integration</h3>
-                    <p className="text-gray-600">Import images, videos, and external content</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50 rounded-2xl p-8">
-                <div className="bg-white rounded-xl p-6 shadow-lg">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-gray-900">AI Setup Assistant</h3>
-                    <Sparkles className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div className="space-y-3">
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-sm text-gray-600">"Create a project timeline with milestones"</p>
-                    </div>
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3">
-                      <p className="text-sm text-blue-800">✓ Timeline template created</p>
-                    </div>
-                    <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg p-3">
-                      <p className="text-sm text-cyan-800">✓ Milestone markers added</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Shiny CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-500 via-blue-600 via-indigo-600 to-cyan-600 text-white relative overflow-hidden">
+        {/* Shiny CTA background elements */}
+        <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-white/20 to-cyan-200/15 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-24 h-24 bg-gradient-to-br from-cyan-200/20 to-white/15 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-br from-white/10 to-blue-200/10 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-1/3 right-1/3 w-12 h-12 bg-white/8 rounded-full blur-2xl"></div>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 text-white">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold mb-6">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-10" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: '20px 20px'
+        }}></div>
+
+        <div className="max-w-4xl mx-auto text-center px-6 relative z-10">
+          <h2 className="text-3xl font-bold mb-4">
             Ready to transform your ideas?
           </h2>
           <p className="text-xl mb-8 text-blue-100">
-            Join thousands of creators using BrainSpace.
+            Join thousands of creators using BrainSpace to bring their ideas to life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/dashboard"
-              className="bg-white text-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl"
+              className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Start Free Trial
             </Link>
-            <button
-              onClick={handleScheduleDemo}
-              className="border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
-            >
+            <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200 shadow-sm">
               Schedule Demo
             </button>
           </div>
@@ -323,55 +267,50 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 text-white py-12 relative">
+        {/* Footer background pattern */}
+        <div className="absolute inset-0 opacity-5" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: '30px 30px'
+        }}></div>
+
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <Brain className="h-8 w-8 text-blue-400" />
-                <span className="text-2xl font-bold">BrainSpace</span>
+                <Brain className="h-6 w-6 text-blue-400" />
+                <span className="text-xl font-semibold">BrainSpace</span>
               </div>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-400 mb-4 text-sm">
                 Where imagination comes to life
               </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white">
-                  <Globe className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white">
-                  <MessageSquare className="h-5 w-5" />
-                </a>
-              </div>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Features</a></li>
-                <li><a href="#" className="hover:text-white">Templates</a></li>
-                <li><a href="#" className="hover:text-white">Pricing</a></li>
-                <li><a href="#" className="hover:text-white">API</a></li>
+              <h3 className="font-semibold mb-4 text-sm">Product</h3>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">About</a></li>
-                <li><a href="#" className="hover:text-white">Blog</a></li>
-                <li><a href="#" className="hover:text-white">Careers</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
+              <h3 className="font-semibold mb-4 text-sm">Company</h3>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Help Center</a></li>
-                <li><a href="#" className="hover:text-white">Documentation</a></li>
-                <li><a href="#" className="hover:text-white">Community</a></li>
-                <li><a href="#" className="hover:text-white">Status</a></li>
+              <h3 className="font-semibold mb-4 text-sm">Support</h3>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
             <p>&copy; 2024 BrainSpace. All rights reserved.</p>
           </div>
         </div>
