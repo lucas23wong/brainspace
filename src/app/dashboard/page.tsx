@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { 
-  Plus, 
-  Search, 
-  Grid, 
-  List, 
-  MoreVertical, 
-  Share, 
-  Edit, 
+import {
+  Plus,
+  Search,
+  Grid,
+  List,
+  MoreVertical,
+  Share,
+  Edit,
   Trash2,
   Brain,
   Calendar,
@@ -113,10 +113,10 @@ const DashboardPage = () => {
               <h1 className="text-2xl font-bold text-gray-900">BrainSpace</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="btn btn-primary">
-                <Plus className="h-4 w-4 mr-2" />
-                New Whiteboard
-              </button>
+              <Link href="/whiteboard/new" className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 flex items-center space-x-2">
+                <Plus className="h-4 w-4" />
+                <span>New Whiteboard</span>
+              </Link>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@ const DashboardPage = () => {
               </button>
             </div>
           </div>
-          
+
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -175,17 +175,17 @@ const DashboardPage = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                     {whiteboard.title}
                   </h3>
-                  
+
                   {whiteboard.description && (
                     <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                       {whiteboard.description}
                     </p>
                   )}
-                  
+
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center space-x-1">
                       <Users className="h-4 w-4" />
@@ -196,7 +196,7 @@ const DashboardPage = () => {
                       <span>{formatDate(whiteboard.lastModified)}</span>
                     </div>
                   </div>
-                  
+
                   {whiteboard.isPublic && (
                     <div className="mt-2">
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -224,7 +224,7 @@ const DashboardPage = () => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center space-x-1">
                       <Users className="h-4 w-4" />
