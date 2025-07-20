@@ -32,14 +32,14 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
-    
+
     if (userId) {
-      const userWhiteboards = whiteboards.filter(wb => 
+      const userWhiteboards = whiteboards.filter(wb =>
         wb.userId === userId || wb.collaborators.includes(userId)
       );
       return NextResponse.json(userWhiteboards);
     }
-    
+
     return NextResponse.json(whiteboards);
   } catch (error) {
     return NextResponse.json(
@@ -52,23 +52,23 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, description, template, userId } = body;
-    
+    const { title, description, template, content, userId } = body;
+
     const newWhiteboard = {
       id: Date.now().toString(),
       title,
       description,
       template,
-      content: null,
+      content: content || null,
       userId,
       collaborators: [userId],
       isPublic: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    
+
     whiteboards.push(newWhiteboard);
-    
+
     return NextResponse.json(newWhiteboard, { status: 201 });
   } catch (error) {
     return NextResponse.json(

@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import WhiteboardCanvas from '@/components/whiteboard/WhiteboardCanvas';
-import { 
-  ArrowLeft, 
-  Save, 
-  Share, 
-  Users, 
-  Settings, 
+import {
+  ArrowLeft,
+  Save,
+  Share,
+  Users,
+  Settings,
   Sparkles,
   MessageSquare,
   Eye,
@@ -21,6 +21,7 @@ interface WhiteboardData {
   title: string;
   description?: string;
   content?: any;
+  template?: any;
   collaborators: string[];
   isPublic: boolean;
 }
@@ -28,27 +29,51 @@ interface WhiteboardData {
 const WhiteboardEditorPage = () => {
   const params = useParams();
   const whiteboardId = params.id as string;
-  
+
   const [whiteboard, setWhiteboard] = useState<WhiteboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showCollaborators, setShowCollaborators] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
 
-  // Mock data - replace with API call
+  // Fetch whiteboard data
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setWhiteboard({
-        id: whiteboardId,
-        title: 'Project Brainstorming',
-        description: 'Ideas for the new product launch',
-        content: null,
-        collaborators: ['user1', 'user2', 'user3'],
-        isPublic: false,
-      });
-      setIsLoading(false);
-    }, 1000);
+    const fetchWhiteboard = async () => {
+      try {
+        const response = await fetch(`/api/whiteboards/${whiteboardId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setWhiteboard(data);
+        } else {
+          // Fallback to mock data if API fails
+          setWhiteboard({
+            id: whiteboardId,
+            title: 'Project Brainstorming',
+            description: 'Ideas for the new product launch',
+            content: null,
+            template: null,
+            collaborators: ['user1', 'user2', 'user3'],
+            isPublic: false,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching whiteboard:', error);
+        // Fallback to mock data
+        setWhiteboard({
+          id: whiteboardId,
+          title: 'Project Brainstorming',
+          description: 'Ideas for the new product launch',
+          content: null,
+          template: null,
+          collaborators: ['user1', 'user2', 'user3'],
+          isPublic: false,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWhiteboard();
   }, [whiteboardId]);
 
   const handleSave = (data: any) => {
@@ -201,6 +226,7 @@ const WhiteboardEditorPage = () => {
       <div className="flex-1 overflow-hidden">
         <WhiteboardCanvas
           initialData={whiteboard.content}
+          template={whiteboard.template}
           onSave={handleSave}
           onShare={handleShare}
           isCollaborative={whiteboard.collaborators.length > 1}

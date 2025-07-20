@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY || 'dummy-key',
 });
 
 export interface WhiteboardTemplate {
@@ -323,6 +323,28 @@ Respond with a JSON object containing: template, elements (array of element desc
 
     public static async generateWhiteboard(prompt: string): Promise<WhiteboardTemplate> {
         try {
+            // Check if OpenAI API key is available
+            if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'dummy-key') {
+                console.warn('OpenAI API key not found. Using fallback template generation.');
+                // Fallback to simple template detection
+                const lowerPrompt = prompt.toLowerCase();
+                if (lowerPrompt.includes('calendar') || lowerPrompt.includes('schedule')) {
+                    return this.generateCalendarTemplate([]);
+                } else if (lowerPrompt.includes('mind') || lowerPrompt.includes('brainstorm')) {
+                    return this.generateMindmapTemplate([]);
+                } else if (lowerPrompt.includes('timeline') || lowerPrompt.includes('roadmap')) {
+                    return this.generateTimelineTemplate([]);
+                } else if (lowerPrompt.includes('kanban') || lowerPrompt.includes('task')) {
+                    return this.generateKanbanTemplate([]);
+                } else if (lowerPrompt.includes('note') || lowerPrompt.includes('study')) {
+                    return this.generateNotesTemplate([]);
+                } else if (lowerPrompt.includes('flow') || lowerPrompt.includes('process')) {
+                    return this.generateFlowchartTemplate([]);
+                } else {
+                    return this.generateCustomTemplate([]);
+                }
+            }
+
             const analysis = await this.analyzePrompt(prompt);
 
             switch (analysis.template) {

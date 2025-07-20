@@ -272,17 +272,22 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
         fabricCanvasRef.current.freeDrawingBrush.width = brushSize;
         fabricCanvasRef.current.freeDrawingBrush.color = color;
       }
+    } else if (currentTool === 'eraser' && fabricCanvasRef.current) {
+      setIsDrawing(true);
+      fabricCanvasRef.current.isDrawingMode = true;
+      if (fabricCanvasRef.current.freeDrawingBrush) {
+        fabricCanvasRef.current.freeDrawingBrush.width = 20;
+        fabricCanvasRef.current.freeDrawingBrush.color = 'rgba(255,255,255,1)';
+      }
     }
   }, [currentTool, brushSize, color]);
 
   const handleMouseMove = useCallback((e: any) => {
-    if (currentTool === 'pen' && isDrawing) {
-      // Drawing is handled automatically by Fabric.js
-    }
-  }, [currentTool, isDrawing]);
+    // Drawing is handled automatically by Fabric.js
+  }, []);
 
   const handleMouseUp = useCallback(() => {
-    if (currentTool === 'pen') {
+    if (currentTool === 'pen' || currentTool === 'eraser') {
       setIsDrawing(false);
     }
   }, [currentTool]);
@@ -291,15 +296,26 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
   const selectTool = (tool: 'pen' | 'eraser' | 'select' | 'shape' | 'text' | 'sticky' | 'ruler' | 'move') => {
     setCurrentTool(tool);
     if (fabricCanvasRef.current) {
-      fabricCanvasRef.current.isDrawingMode = tool === 'pen';
-      fabricCanvasRef.current.selection = tool === 'select';
-
-      if (tool === 'eraser') {
+      if (tool === 'pen') {
         fabricCanvasRef.current.isDrawingMode = true;
+        fabricCanvasRef.current.selection = false;
+        if (fabricCanvasRef.current.freeDrawingBrush) {
+          fabricCanvasRef.current.freeDrawingBrush.width = brushSize;
+          fabricCanvasRef.current.freeDrawingBrush.color = color;
+        }
+      } else if (tool === 'eraser') {
+        fabricCanvasRef.current.isDrawingMode = true;
+        fabricCanvasRef.current.selection = false;
         if (fabricCanvasRef.current.freeDrawingBrush) {
           fabricCanvasRef.current.freeDrawingBrush.width = 20;
           fabricCanvasRef.current.freeDrawingBrush.color = 'rgba(255,255,255,1)';
         }
+      } else if (tool === 'select') {
+        fabricCanvasRef.current.isDrawingMode = false;
+        fabricCanvasRef.current.selection = true;
+      } else {
+        fabricCanvasRef.current.isDrawingMode = false;
+        fabricCanvasRef.current.selection = false;
       }
     }
   };
