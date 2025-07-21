@@ -13,6 +13,7 @@ import {
   Palette
 } from 'lucide-react';
 import WhiteboardGalleryMarquee from '@/components/WhiteboardGalleryMarquee';
+import { FaXTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa6';
 
 export default function HomePage() {
   return (
@@ -198,18 +199,6 @@ export default function HomePage() {
       {/* REMOVE THIS SECTION: The duplicate CTA with 'Ready to transform your ideas?', 'Join thousands...', and 'Start Free Trial' button */}
 
       {/* Bottom CTA Section */}
-      <section className="relative py-20 bg-gradient-to-r from-blue-500 via-blue-600 via-indigo-600 to-cyan-600 text-white text-center mt-24">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your ideas?</h2>
-        <div className="flex justify-center gap-6">
-          <Link
-            href="/dashboard"
-            className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105"
-          >
-            Start Now
-          </Link>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 relative">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
@@ -225,18 +214,30 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-1">
               <span className="font-medium">Krish Sahni</span>
               <div className="flex gap-3 mt-1">
-                <a href="https://x.com/krish07sahni" target="_blank" rel="noopener noreferrer" aria-label="Krish's X"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.53 2.477h3.7l-8.13 9.28 9.57 9.766h-7.52l-5.9-6.6-6.77 6.6H1.47l8.7-9.98L.24 2.477h7.7l5.13 5.74 6.46-5.74zm-1.3 16.04h2.05L7.02 4.13H4.87l11.36 14.387z" /></svg></a>
-                <a href="https://www.linkedin.com/in/krish-sahni-645876291/" target="_blank" rel="noopener noreferrer" aria-label="Krish's LinkedIn"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11.75 20h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76s.78-1.76 1.75-1.76c.97 0 1.75.79 1.75 1.76s-.78 1.76-1.75 1.76zm15.25 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v5.59z" /></svg></a>
-                <a href="https://www.instagram.com/krishsah.ni/" target="_blank" rel="noopener noreferrer" aria-label="Krish's Instagram"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.242-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.974-.974 2.242-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.771.131 4.659.425 3.678 1.406c-.98.98-1.274 2.092-1.333 3.374C2.013 8.332 2 8.741 2 12c0 3.259.013 3.668.072 4.948.059 1.282.353 2.394 1.333 3.374.98.98 2.092 1.274 3.374 1.333C8.332 23.987 8.741 24 12 24s3.668-.013 4.948-.072c1.282-.059 2.394-.353 3.374-1.333.98-.98 1.274-2.092 1.333-3.374.059-1.28.072-1.689.072-4.948 0-3.259-.013-3.668-.072-4.948-.059-1.282-.353-2.394-1.333-3.374-.98-.98-2.092-1.274-3.374-1.333C15.668.013 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z" /></svg></a>
+                <a href="https://x.com/krish07sahni" target="_blank" rel="noopener noreferrer" aria-label="Krish's X">
+                  <FaXTwitter className="w-6 h-6" />
+                </a>
+                <a href="https://www.linkedin.com/in/krish-sahni-645876291/" target="_blank" rel="noopener noreferrer" aria-label="Krish's LinkedIn">
+                  <FaLinkedin className="w-6 h-6" />
+                </a>
+                <a href="https://www.instagram.com/krishsah.ni/" target="_blank" rel="noopener noreferrer" aria-label="Krish's Instagram">
+                  <FaInstagram className="w-6 h-6" />
+                </a>
               </div>
             </div>
             {/* Lucas Wong */}
             <div className="flex flex-col items-center gap-1">
               <span className="font-medium">Lucas Wong</span>
               <div className="flex gap-3 mt-1">
-                <a href="https://x.com/lucas23wong" target="_blank" rel="noopener noreferrer" aria-label="Lucas's X"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.53 2.477h3.7l-8.13 9.28 9.57 9.766h-7.52l-5.9-6.6-6.77 6.6H1.47l8.7-9.98L.24 2.477h7.7l5.13 5.74 6.46-5.74zm-1.3 16.04h2.05L7.02 4.13H4.87l11.36 14.387z" /></svg></a>
-                <a href="https://www.linkedin.com/in/lucas-wong-817090330/" target="_blank" rel="noopener noreferrer" aria-label="Lucas's LinkedIn"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11.75 20h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76s.78-1.76 1.75-1.76c.97 0 1.75.79 1.75 1.76s-.78 1.76-1.75 1.76zm15.25 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v5.59z" /></svg></a>
-                <a href="https://www.instagram.com/lucasjw23/?next=%2F" target="_blank" rel="noopener noreferrer" aria-label="Lucas's Instagram"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.242-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.974-.974 2.242-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.771.131 4.659.425 3.678 1.406c-.98.98-1.274 2.092-1.333 3.374C2.013 8.332 2 8.741 2 12c0 3.259.013 3.668.072 4.948.059 1.282.353 2.394 1.333 3.374.98.98 2.092 1.274 3.374 1.333C8.332 23.987 8.741 24 12 24s3.668-.013 4.948-.072c1.282-.059 2.394-.353 3.374-1.333.98-.98 1.274-2.092 1.333-3.374.059-1.28.072-1.689.072-4.948 0-3.259-.013-3.668-.072-4.948-.059-1.282-.353-2.394-1.333-3.374-.98-.98-2.092-1.274-3.374-1.333C15.668.013 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z" /></svg></a>
+                <a href="https://x.com/lucas23wong" target="_blank" rel="noopener noreferrer" aria-label="Lucas's X">
+                  <FaXTwitter className="w-6 h-6" />
+                </a>
+                <a href="https://www.linkedin.com/in/lucas-wong-817090330/" target="_blank" rel="noopener noreferrer" aria-label="Lucas's LinkedIn">
+                  <FaLinkedin className="w-6 h-6" />
+                </a>
+                <a href="https://www.instagram.com/lucasjw23/?next=%2F" target="_blank" rel="noopener noreferrer" aria-label="Lucas's Instagram">
+                  <FaInstagram className="w-6 h-6" />
+                </a>
               </div>
             </div>
           </div>
