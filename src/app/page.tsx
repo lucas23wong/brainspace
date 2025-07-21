@@ -12,27 +12,19 @@ import {
   Users,
   Palette
 } from 'lucide-react';
+import WhiteboardGalleryMarquee from '@/components/WhiteboardGalleryMarquee';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-100/60 to-blue-200/40 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Smooth blue-to-white gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-100/60 via-white/80 to-blue-50/40"></div>
         {/* Shiny blue gradient orbs */}
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-300/40 via-blue-400/30 to-cyan-300/25 rounded-full blur-3xl"></div>
         <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-gradient-to-br from-blue-200/50 via-blue-300/35 to-indigo-300/25 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-32 left-1/4 w-80 h-80 bg-gradient-to-br from-cyan-300/30 via-blue-400/25 to-blue-500/20 rounded-full blur-3xl"></div>
-
-        {/* Shiny noise texture */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, #3b82f6 1px, transparent 0)`,
-          backgroundSize: '60px 60px'
-        }}></div>
-
-        {/* Shiny floating elements */}
-        <div className="absolute top-1/4 left-1/3 w-1 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full shadow-sm"></div>
-        <div className="absolute top-1/2 right-1/4 w-0.5 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-sm"></div>
-        <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-gradient-to-r from-indigo-400 to-blue-600 rounded-full shadow-sm"></div>
       </div>
 
       {/* Navigation */}
@@ -55,12 +47,6 @@ export default function HomePage() {
               <Link href="/auth/signin" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
                 Sign In
               </Link>
-              <Link
-                href="/auth/signup"
-                className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-blue-400/30"
-              >
-                Get Started
-              </Link>
             </div>
           </div>
         </div>
@@ -80,13 +66,12 @@ export default function HomePage() {
               AI-Powered Whiteboard Platform
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-blue-500 via-blue-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-                Think. <span className="font-black">CREATE.</span> Collaborate.
+              <span className="">
+                <span className="text-black">Think.</span> <span className="bg-gradient-to-r from-blue-500 via-blue-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent">Visualize.</span> <span className="text-black">Collaborate</span>.
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Create stunning whiteboards with AI assistance. Collaborate in real-time,
-              organize thoughts, and bring your ideas to life instantly.
+              Brain dump, organize ideas, and collaborate with ease using AI-driven whiteboards.
             </p>
           </div>
 
@@ -104,24 +89,9 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Social Proof */}
-          <div className="flex items-center justify-center space-x-8 text-gray-500 text-sm">
-            <div className="flex items-center">
-              <div className="flex -space-x-2 mr-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className={`w-6 h-6 rounded-full border-2 border-white shadow-lg ${i === 1 ? 'bg-gradient-to-br from-blue-400 to-blue-500' :
-                    i === 2 ? 'bg-gradient-to-br from-blue-500 to-indigo-500' :
-                      i === 3 ? 'bg-gradient-to-br from-indigo-500 to-blue-600' : 'bg-gradient-to-br from-blue-600 to-cyan-600'
-                    }`}></div>
-                ))}
-              </div>
-              <span className="font-medium">10,000+ users</span>
-            </div>
-            <div className="flex items-center">
-              <Star className="h-4 w-4 text-yellow-400 mr-1" />
-              <span className="font-medium">4.9/5 rating</span>
-            </div>
-          </div>
+          {/* Whiteboard Gallery Marquee */}
+          <WhiteboardGalleryMarquee />
+
         </div>
       </section>
 
@@ -135,11 +105,11 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Everything you need to create and collaborate
+              Everything you need to start
+              <span className="inline-block ml-4 transition-all duration-300 border-2 border-blue-400 bg-gradient-to-r from-blue-50 via-blue-100 to-indigo-100 px-3 py-1 rounded-xl shadow-sm hover:shadow-blue-400/50 hover:scale-105 hover:border-blue-600 group cursor-pointer">
+                <span className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold">BrainSpacing</span>
+              </span>
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Powerful tools designed for teams and individuals who want to visualize their ideas quickly and effectively.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

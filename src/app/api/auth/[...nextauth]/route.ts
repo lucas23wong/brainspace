@@ -14,7 +14,7 @@ const handler = NextAuth({
         }),
     ],
     session: {
-        strategy: 'jwt',
+        strategy: 'database',
     },
     callbacks: {
         async session({ session, token }) {
@@ -28,7 +28,11 @@ const handler = NextAuth({
                 token.sub = user.id;
             }
             return token;
-        },
+        }
+        // async redirect({ url, baseUrl }) {
+        //     // Always redirect to dashboard after sign-in
+        //     return baseUrl + '/dashboard';
+        // },
     },
     pages: {
         signIn: '/auth/signin',

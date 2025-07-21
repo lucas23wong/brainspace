@@ -26,6 +26,12 @@ interface WhiteboardCanvasProps {
   onEndSession?: () => void;
 }
 
+const PEN_TYPES = [
+  { label: 'Solid', value: 'solid' },
+  { label: 'Dashed', value: 'dashed' },
+  { label: 'Dotted', value: 'dotted' },
+];
+
 const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
   initialData,
   onSave,
@@ -43,6 +49,13 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
   const [history, setHistory] = useState<any[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [showShapePicker, setShowShapePicker] = useState(false);
+  const [penType, setPenType] = useState<'solid' | 'dashed' | 'dotted'>('solid');
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [fontFamily, setFontFamily] = useState('Arial');
+  const [fontSize, setFontSize] = useState(20);
+  const [showFontControls, setShowFontControls] = useState(false);
 
   // Initialize canvas
   useEffect(() => {
@@ -192,6 +205,7 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
   // Tool selection handlers
   const selectTool = (tool: 'pen' | 'eraser' | 'select' | 'text' | 'sticky' | 'shape') => {
     setCurrentTool(tool);
+    setShowFontControls(false);
     if (fabricCanvasRef.current) {
       if (tool === 'pen') {
         fabricCanvasRef.current.isDrawingMode = true;
@@ -200,11 +214,13 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
         const brush = new fabric.PencilBrush(fabricCanvasRef.current);
         brush.width = brushSize;
         brush.color = color;
+        if (penType === 'dashed') brush.strokeLineCap = 'round';
+        if (penType === 'dotted') brush.strokeDashArray = [1, 10];
         fabricCanvasRef.current.freeDrawingBrush = brush;
       } else if (tool === 'eraser') {
         fabricCanvasRef.current.isDrawingMode = true;
         fabricCanvasRef.current.selection = false;
-        // Create a white brush for erasing
+        // Use a white pencil brush as eraser (circular effect)
         const brush = new fabric.PencilBrush(fabricCanvasRef.current);
         brush.width = brushSize * 2;
         brush.color = 'rgba(255,255,255,1)';
@@ -216,54 +232,90 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     }
   };
 
-  // Update brush when color or size changes
+  // Update brush when color, size, or penType changes
   useEffect(() => {
     if (fabricCanvasRef.current && fabricCanvasRef.current.freeDrawingBrush) {
       if (currentTool === 'pen') {
         fabricCanvasRef.current.freeDrawingBrush.width = brushSize;
         fabricCanvasRef.current.freeDrawingBrush.color = color;
+        if (penType === 'dashed') fabricCanvasRef.current.freeDrawingBrush.strokeDashArray = [10, 10];
+        else if (penType === 'dotted') fabricCanvasRef.current.freeDrawingBrush.strokeDashArray = [1, 10];
+        else fabricCanvasRef.current.freeDrawingBrush.strokeDashArray = null;
       } else if (currentTool === 'eraser') {
         fabricCanvasRef.current.freeDrawingBrush.width = brushSize * 2;
         fabricCanvasRef.current.freeDrawingBrush.color = 'rgba(255,255,255,1)';
       }
     }
-  }, [currentTool, brushSize, color]);
+  }, [currentTool, brushSize, color, penType]);
 
   // Add text
   const addText = () => {
     if (!fabricCanvasRef.current) return;
-
-    const text = new fabric.IText('Double click to edit', {
+    const text = new fabric.IText('Type here', {
       left: 100,
       top: 100,
-      fontSize: 20,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
       fill: color,
     });
-
     fabricCanvasRef.current.add(text);
     fabricCanvasRef.current.setActiveObject(text);
     fabricCanvasRef.current.renderAll();
+    setShowFontControls(true);
   };
 
-  // Add sticky note
+  // Add sticky note (editable)
   const addStickyNote = () => {
     if (!fabricCanvasRef.current) return;
-
-    const sticky = new fabric.Rect({
+    const sticky = new fabric.IText('Sticky note', {
       left: 100,
       top: 100,
-      width: 150,
-      height: 100,
-      fill: '#fef3c7',
-      stroke: '#f59e0b',
-      strokeWidth: 1,
-      rx: 8,
-      ry: 8,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+      fill: '#b45309',
+      backgroundColor: '#fef3c7',
+      editable: true,
     });
-
     fabricCanvasRef.current.add(sticky);
     fabricCanvasRef.current.setActiveObject(sticky);
     fabricCanvasRef.current.renderAll();
+    setShowFontControls(true);
+  };
+
+  // Font controls for selected text/sticky
+  useEffect(() => {
+    if (!fabricCanvasRef.current) return;
+    const onSelection = () => {
+      const obj = fabricCanvasRef.current?.getActiveObject();
+      if (obj && (obj.type === 'i-text' || obj.type === 'textbox')) {
+        setShowFontControls(true);
+        // Type guard for fontFamily/fontSize
+        const fontObj = obj as fabric.IText | fabric.Textbox;
+        setFontFamily(fontObj.fontFamily || 'Arial');
+        setFontSize(fontObj.fontSize || 20);
+      } else {
+        setShowFontControls(false);
+      }
+    };
+    fabricCanvasRef.current.on('selection:created', onSelection);
+    fabricCanvasRef.current.on('selection:updated', onSelection);
+    fabricCanvasRef.current.on('selection:cleared', () => setShowFontControls(false));
+    return () => {
+      fabricCanvasRef.current?.off('selection:created', onSelection);
+      fabricCanvasRef.current?.off('selection:updated', onSelection);
+      fabricCanvasRef.current?.off('selection:cleared');
+    };
+  }, []);
+
+  const updateFont = (property: 'fontFamily' | 'fontSize', value: string | number) => {
+    if (!fabricCanvasRef.current) return;
+    const obj = fabricCanvasRef.current.getActiveObject();
+    if (obj && (obj.type === 'i-text' || obj.type === 'textbox')) {
+      const fontObj = obj as fabric.IText | fabric.Textbox;
+      if (property === 'fontFamily') fontObj.set('fontFamily', value);
+      if (property === 'fontSize') fontObj.set('fontSize', value);
+      fabricCanvasRef.current.renderAll();
+    }
   };
 
   // Add shape
@@ -347,6 +399,39 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     }
   };
 
+  // AI prompt submit handler
+  const handleAISubmit = async () => {
+    if (!aiPrompt) return;
+    setAiLoading(true);
+    setAiResponse(null);
+    try {
+      const res = await fetch('/api/ai/whiteboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: aiPrompt }),
+      });
+      const data = await res.json();
+      if (data.result) {
+        // Try to parse as JSON and add to canvas if valid
+        let parsed = null;
+        try {
+          parsed = JSON.parse(data.result);
+        } catch (e) { }
+        if (parsed && typeof parsed === 'object' && parsed.type) {
+          addElementToCanvas(parsed);
+          setAiResponse('Element added to whiteboard!');
+        } else {
+          setAiResponse(data.result);
+        }
+      } else setAiResponse(data.error || 'No response from AI.');
+    } catch (err: any) {
+      setAiResponse('Error contacting AI.');
+    } finally {
+      setAiLoading(false);
+      setAiPrompt('');
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
@@ -376,7 +461,19 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
               <Eraser size={20} />
             </button>
           </div>
-
+          {/* Pen Type Selector */}
+          {currentTool === 'pen' && (
+            <select
+              value={penType}
+              onChange={e => setPenType(e.target.value as any)}
+              className="border rounded px-2 py-1 text-sm"
+              title="Pen Type"
+            >
+              {PEN_TYPES.map(type => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+          )}
           {/* Content Tools */}
           <div className="flex items-center space-x-2">
             <button
@@ -408,8 +505,8 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
                 <Square size={20} />
               </button>
               {showShapePicker && (
-                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
-                  <div className="grid grid-cols-2 gap-1">
+                <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-20 min-w-[120px]">
+                  <div className="flex flex-col gap-1">
                     {['rectangle', 'circle'].map((shape) => (
                       <button
                         key={shape}
@@ -419,9 +516,9 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
                           selectTool('shape');
                           addShape();
                         }}
-                        className="p-2 hover:bg-gray-100 rounded text-sm"
+                        className="p-2 hover:bg-gray-100 rounded text-sm text-left w-full"
                       >
-                        {shape}
+                        {shape.charAt(0).toUpperCase() + shape.slice(1)}
                       </button>
                     ))}
                   </div>
@@ -429,7 +526,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
               )}
             </div>
           </div>
-
           {/* Color and Size Controls */}
           <div className="flex items-center space-x-2">
             <input
@@ -442,7 +538,7 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
             <input
               type="range"
               min="1"
-              max="20"
+              max="40"
               value={brushSize}
               onChange={(e) => setBrushSize(Number(e.target.value))}
               className="w-20"
@@ -450,8 +546,31 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
             />
             <span className="text-sm text-gray-600 w-8">{brushSize}</span>
           </div>
+          {/* Font Controls */}
+          {showFontControls && (
+            <div className="flex items-center space-x-2 ml-4">
+              <select
+                value={fontFamily}
+                onChange={e => { setFontFamily(e.target.value); updateFont('fontFamily', e.target.value); }}
+                className="border rounded px-2 py-1 text-sm"
+                title="Font Family"
+              >
+                {['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Georgia'].map(f => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </select>
+              <input
+                type="number"
+                min="8"
+                max="72"
+                value={fontSize}
+                onChange={e => { setFontSize(Number(e.target.value)); updateFont('fontSize', Number(e.target.value)); }}
+                className="border rounded px-2 py-1 text-sm w-16"
+                title="Font Size"
+              />
+            </div>
+          )}
         </div>
-
         {/* Action Buttons */}
         <div className="flex items-center space-x-2">
           <button
@@ -486,7 +605,6 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
           </button>
         </div>
       </div>
-
       {/* Canvas Container */}
       <div className="flex-1 bg-gray-50 p-4">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -496,7 +614,32 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
           />
         </div>
       </div>
-
+      {/* AI Prompt Box */}
+      <div className="bg-white border-t border-gray-200 p-3 flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={aiPrompt}
+            onChange={e => setAiPrompt(e.target.value)}
+            placeholder="Ask AI to add something to the whiteboard..."
+            className="flex-1 border rounded px-3 py-2 text-sm"
+            disabled={aiLoading}
+            onKeyDown={e => { if (e.key === 'Enter') handleAISubmit(); }}
+          />
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            onClick={handleAISubmit}
+            disabled={aiLoading || !aiPrompt}
+          >
+            {aiLoading ? 'Sending...' : 'Send'}
+          </button>
+        </div>
+        {aiResponse && (
+          <div className="bg-gray-50 border border-gray-200 rounded p-2 text-sm text-gray-800 whitespace-pre-line mt-1">
+            {aiResponse}
+          </div>
+        )}
+      </div>
       {/* Status Bar */}
       <div className="bg-white border-t border-gray-200 p-2 text-sm text-gray-600">
         <div className="flex items-center justify-between">

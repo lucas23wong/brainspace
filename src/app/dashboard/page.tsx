@@ -18,6 +18,7 @@ import {
   Users,
   Clock
 } from 'lucide-react';
+// import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 interface Whiteboard {
   id: string;
@@ -103,6 +104,7 @@ const DashboardPage = () => {
   );
 
   return (
+    // <ProtectedRoute>
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
@@ -270,6 +272,7 @@ const DashboardPage = () => {
         )}
       </main>
     </div>
+    // </ProtectedRoute>
   );
 };
 
