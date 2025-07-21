@@ -29,25 +29,18 @@ export default function HomePage() {
 
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-blue-300/50 shadow-lg z-50">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
-                <Brain className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-semibold bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent">
-                BrainSpace
-              </span>
+        <div className="relative w-full h-16">
+          <div className="absolute left-0 top-0 h-16 flex items-center space-x-3 pl-6">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Brain className="h-5 w-5 text-white" />
             </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">Pricing</a>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/auth/signin" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
-                Sign In
-              </Link>
-            </div>
+            <span className="text-xl font-semibold bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-700 bg-clip-text text-transparent">
+              BrainSpace
+            </span>
+          </div>
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-6">
+            <a href="#features" className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm">Features</a>
+            <a href="#demo" className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm">Demo</a>
           </div>
         </div>
       </nav>
@@ -71,7 +64,7 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Brain dump, organize ideas, and collaborate with ease using AI-driven whiteboards.
+              Brain dump, organize ideas, take notes, and collaborate with ease using AI-driven whiteboards.
             </p>
           </div>
 
@@ -80,7 +73,7 @@ export default function HomePage() {
               href="/dashboard"
               className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 flex items-center shadow-xl hover:shadow-2xl transform hover:scale-105 border border-blue-400/30"
             >
-              Start Creating Free
+              Start Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <button className="flex items-center px-8 py-4 border-2 border-blue-400 text-blue-700 rounded-lg text-lg font-semibold hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 hover:border-blue-500 transition-all duration-200 shadow-lg">
@@ -202,87 +195,54 @@ export default function HomePage() {
       </section>
 
       {/* Shiny CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-500 via-blue-600 via-indigo-600 to-cyan-600 text-white relative overflow-hidden">
-        {/* Shiny CTA background elements */}
-        <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-white/20 to-cyan-200/15 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-24 h-24 bg-gradient-to-br from-cyan-200/20 to-white/15 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-br from-white/10 to-blue-200/10 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-1/3 right-1/3 w-12 h-12 bg-white/8 rounded-full blur-2xl"></div>
+      {/* REMOVE THIS SECTION: The duplicate CTA with 'Ready to transform your ideas?', 'Join thousands...', and 'Start Free Trial' button */}
 
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: '20px 20px'
-        }}></div>
-
-        <div className="max-w-4xl mx-auto text-center px-6 relative z-10">
-          <h2 className="text-3xl font-bold mb-4">
-            Ready to transform your ideas?
-          </h2>
-          <p className="text-xl mb-8 text-blue-100">
-            Join thousands of creators using BrainSpace to bring their ideas to life.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/dashboard"
-              className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              Start Free Trial
-            </Link>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200 shadow-sm">
-              Schedule Demo
-            </button>
-          </div>
+      {/* Bottom CTA Section */}
+      <section className="relative py-20 bg-gradient-to-r from-blue-500 via-blue-600 via-indigo-600 to-cyan-600 text-white text-center mt-24">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your ideas?</h2>
+        <div className="flex justify-center gap-6">
+          <Link
+            href="/dashboard"
+            className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105"
+          >
+            Start Now
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 relative">
-        {/* Footer background pattern */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: '30px 30px'
-        }}></div>
-
-        <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <Brain className="h-6 w-6 text-blue-400" />
-                <span className="text-xl font-semibold">BrainSpace</span>
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
+          {/* Logo and Brand */}
+          <div className="flex items-center space-x-3 mb-6 md:mb-0">
+            <Brain className="h-8 w-8 text-blue-400" />
+            <span className="text-2xl font-semibold">BrainSpace</span>
+          </div>
+          {/* Social Media Row */}
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 w-full md:w-auto justify-center md:justify-end">
+            <span className="font-semibold text-lg mb-2 md:mb-0">Follow us on social media</span>
+            {/* Krish Sahni */}
+            <div className="flex flex-col items-center gap-1">
+              <span className="font-medium">Krish Sahni</span>
+              <div className="flex gap-3 mt-1">
+                <a href="https://x.com/krish07sahni" target="_blank" rel="noopener noreferrer" aria-label="Krish's X"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.53 2.477h3.7l-8.13 9.28 9.57 9.766h-7.52l-5.9-6.6-6.77 6.6H1.47l8.7-9.98L.24 2.477h7.7l5.13 5.74 6.46-5.74zm-1.3 16.04h2.05L7.02 4.13H4.87l11.36 14.387z" /></svg></a>
+                <a href="https://www.linkedin.com/in/krish-sahni-645876291/" target="_blank" rel="noopener noreferrer" aria-label="Krish's LinkedIn"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11.75 20h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76s.78-1.76 1.75-1.76c.97 0 1.75.79 1.75 1.76s-.78 1.76-1.75 1.76zm15.25 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v5.59z" /></svg></a>
+                <a href="https://www.instagram.com/krishsah.ni/" target="_blank" rel="noopener noreferrer" aria-label="Krish's Instagram"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.242-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.974-.974 2.242-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.771.131 4.659.425 3.678 1.406c-.98.98-1.274 2.092-1.333 3.374C2.013 8.332 2 8.741 2 12c0 3.259.013 3.668.072 4.948.059 1.282.353 2.394 1.333 3.374.98.98 2.092 1.274 3.374 1.333C8.332 23.987 8.741 24 12 24s3.668-.013 4.948-.072c1.282-.059 2.394-.353 3.374-1.333.98-.98 1.274-2.092 1.333-3.374.059-1.28.072-1.689.072-4.948 0-3.259-.013-3.668-.072-4.948-.059-1.282-.353-2.394-1.333-3.374-.98-.98-2.092-1.274-3.374-1.333C15.668.013 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z" /></svg></a>
               </div>
-              <p className="text-gray-400 mb-4 text-sm">
-                Where imagination comes to life
-              </p>
             </div>
-            <div>
-              <h3 className="font-semibold mb-4 text-sm">Product</h3>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4 text-sm">Company</h3>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4 text-sm">Support</h3>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
-              </ul>
+            {/* Lucas Wong */}
+            <div className="flex flex-col items-center gap-1">
+              <span className="font-medium">Lucas Wong</span>
+              <div className="flex gap-3 mt-1">
+                <a href="https://x.com/lucas23wong" target="_blank" rel="noopener noreferrer" aria-label="Lucas's X"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.53 2.477h3.7l-8.13 9.28 9.57 9.766h-7.52l-5.9-6.6-6.77 6.6H1.47l8.7-9.98L.24 2.477h7.7l5.13 5.74 6.46-5.74zm-1.3 16.04h2.05L7.02 4.13H4.87l11.36 14.387z" /></svg></a>
+                <a href="https://www.linkedin.com/in/lucas-wong-817090330/" target="_blank" rel="noopener noreferrer" aria-label="Lucas's LinkedIn"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11.75 20h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76s.78-1.76 1.75-1.76c.97 0 1.75.79 1.75 1.76s-.78 1.76-1.75 1.76zm15.25 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v5.59z" /></svg></a>
+                <a href="https://www.instagram.com/lucasjw23/?next=%2F" target="_blank" rel="noopener noreferrer" aria-label="Lucas's Instagram"><svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.242-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.974-.974 2.242-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.771.131 4.659.425 3.678 1.406c-.98.98-1.274 2.092-1.333 3.374C2.013 8.332 2 8.741 2 12c0 3.259.013 3.668.072 4.948.059 1.282.353 2.394 1.333 3.374.98.98 2.092 1.274 3.374 1.333C8.332 23.987 8.741 24 12 24s3.668-.013 4.948-.072c1.282-.059 2.394-.353 3.374-1.333.98-.98 1.274-2.092 1.333-3.374.059-1.28.072-1.689.072-4.948 0-3.259-.013-3.668-.072-4.948-.059-1.282-.353-2.394-1.333-3.374-.98-.98-2.092-1.274-3.374-1.333C15.668.013 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z" /></svg></a>
+              </div>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-            <p>&copy; 2024 BrainSpace. All rights reserved.</p>
-          </div>
+        </div>
+        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm w-full">
+          <p>&copy; 2024 BrainSpace. All rights reserved.</p>
         </div>
       </footer>
     </div>
