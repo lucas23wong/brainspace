@@ -26,6 +26,9 @@ model User {
   
   // Sessions
   sessions      Session[]
+  
+  // Comments
+  comments      Comment[]
 }
 
 model Whiteboard {
