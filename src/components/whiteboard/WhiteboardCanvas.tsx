@@ -118,17 +118,26 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     canvas.on('object:modified', handleObjectModified);
     canvas.on('object:removed', handleObjectRemoved);
 
-    // Load initial data if provided
-    if (initialData) {
+    // Debug log
+    console.log('WhiteboardCanvas mount:', { initialData, template });
+
+    // Helper to check if initialData is empty
+    const isEmptyData =
+      !initialData ||
+      (typeof initialData === 'object' && Object.keys(initialData).length === 0);
+
+    if (!isEmptyData) {
       canvas.loadFromJSON(initialData, () => {
         canvas.renderAll();
         saveToHistory();
       });
-    }
-
-    // Apply template if provided
-    if (template) {
-      applyTemplate(template);
+    } else if (template) {
+      if (typeof template === 'string') {
+        if (template === 'calendar') addCalendarTemplate();
+        // Add more templates here as needed
+      } else {
+        applyTemplate(template);
+      }
     }
 
     // Handle window resize
@@ -758,6 +767,115 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     setShowTemplateModal(false);
   };
 
+  // Add calendar template
+  const addCalendarTemplate = () => {
+    if (!fabricCanvasRef.current) return;
+    const canvas = fabricCanvasRef.current;
+    canvas.clear();
+    // Calendar dimensions
+    const left = 100;
+    const top = 80;
+    const width = 700;
+    const height = 500;
+    const rows = 6;
+    const cols = 7;
+    // Main calendar body
+    const calendarBody = new fabric.Rect({
+      left,
+      top,
+      width,
+      height,
+      fill: '#f8fafc',
+      stroke: '#a5b4fc',
+      strokeWidth: 3,
+      rx: 24,
+      ry: 24,
+      selectable: false,
+      evented: false,
+    });
+    canvas.add(calendarBody);
+    // Title (current month/year)
+    const now = new Date();
+    const monthName = now.toLocaleString('default', { month: 'long' });
+    const year = now.getFullYear();
+    const title = new fabric.Text(`${monthName} ${year}`, {
+      left: left + width / 2,
+      top: top - 40,
+      fontSize: 36,
+      fontFamily: 'Arial',
+      fill: '#6366f1',
+      fontWeight: 'bold',
+      originX: 'center',
+      selectable: false,
+      evented: false,
+    });
+    canvas.add(title);
+    // Day labels
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    days.forEach((day, i) => {
+      const label = new fabric.Text(day, {
+        left: left + (i + 0.5) * (width / cols),
+        top: top + 16,
+        fontSize: 20,
+        fontFamily: 'Arial',
+        fill: '#64748b',
+        originX: 'center',
+        selectable: false,
+        evented: false,
+      });
+      canvas.add(label);
+    });
+    // Grid lines
+    for (let i = 1; i < cols; i++) {
+      const x = left + (i * width) / cols;
+      const line = new fabric.Line([x, top + 48, x, top + height], {
+        stroke: '#c7d2fe',
+        strokeWidth: 2,
+        selectable: false,
+        evented: false,
+      });
+      canvas.add(line);
+    }
+    for (let i = 1; i < rows; i++) {
+      const y = top + 48 + (i * (height - 48)) / (rows - 1);
+      const line = new fabric.Line([left, y, left + width, y], {
+        stroke: '#c7d2fe',
+        strokeWidth: 2,
+        selectable: false,
+        evented: false,
+      });
+      canvas.add(line);
+    }
+    // Calculate days for current month
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const startDay = firstDay.getDay();
+    const numDays = lastDay.getDate();
+    let day = 1;
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const cellIndex = row * cols + col;
+        if (cellIndex >= startDay && day <= numDays) {
+          const x = left + col * (width / cols) + (width / cols) * 0.08;
+          const y = top + 48 + row * ((height - 48) / (rows - 1)) + 8;
+          const dayText = new fabric.Text(day.toString(), {
+            left: x,
+            top: y,
+            fontSize: 18,
+            fontFamily: 'Arial',
+            fill: '#334155',
+            selectable: false,
+            evented: false,
+          });
+          canvas.add(dayText);
+          day++;
+        }
+      }
+    }
+    canvas.renderAll();
+    saveToHistory();
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
@@ -916,7 +1034,7 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
             className={`p-2 rounded ${showRuler ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
             title="Toggle Ruler"
           >
-            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="6" rx="2"/><path d="M6 7v6M10 7v6M14 7v6M18 7v6"/></svg>
+            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="6" rx="2" /><path d="M6 7v6M10 7v6M14 7v6M18 7v6" /></svg>
           </button>
         </div>
         {/* Action Buttons */}
@@ -1006,17 +1124,17 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
 
       {/* --- Add the pen settings pop-up menu (floating panel) --- */}
       {/* --- In the toolbar, wrap the pen button in a relative container and center the pop-up below it --- */}
-        <div className="relative flex items-center">
-          <button
-            className={`p-2 rounded-lg ${currentTool === 'pen' ? 'bg-violet-100' : ''}`}
-            onClick={() => {
-              setCurrentTool('pen');
-              setShowPenMenu((v) => !v);
-            }}
-          >
-            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-6-6-2 2 6 6 2-2z"/></svg>
-          </button>
-        </div>
+      <div className="relative flex items-center">
+        <button
+          className={`p-2 rounded-lg ${currentTool === 'pen' ? 'bg-violet-100' : ''}`}
+          onClick={() => {
+            setCurrentTool('pen');
+            setShowPenMenu((v) => !v);
+          }}
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z" /><path d="M18 13l-6-6-2 2 6 6 2-2z" /></svg>
+        </button>
+      </div>
       {/* --- Render the pen settings panel as a fixed left-side floating card --- */}
       {currentTool === 'pen' && (
         <motion.div
@@ -1109,9 +1227,9 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
             <h2 className="text-lg font-semibold mb-4">Choose a Template</h2>
             <button
               className="w-full py-2 mb-3 rounded bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium"
-              onClick={addFlowchartTemplate}
+              onClick={() => { addCalendarTemplate(); setShowTemplateModal(false); }}
             >
-              Flowchart
+              Calendar
             </button>
             <button
               className="w-full py-2 mb-3 rounded bg-violet-100 hover:bg-violet-200 text-violet-700 font-medium"

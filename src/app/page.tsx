@@ -71,7 +71,7 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Link
-              href="/dashboard"
+              href="/whiteboard/new"
               className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 flex items-center shadow-xl hover:shadow-2xl transform hover:scale-105 border border-blue-400/30"
             >
               Start Now

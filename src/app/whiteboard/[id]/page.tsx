@@ -123,7 +123,7 @@ const WhiteboardEditorPage = () => {
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button className="p-2 hover:bg-gray-100 rounded-lg">
+            <button className="p-2 hover:bg-gray-100 rounded-lg" onClick={() => window.location.href = '/whiteboard/new'}>
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
