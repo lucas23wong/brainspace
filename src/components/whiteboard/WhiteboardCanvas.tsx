@@ -28,6 +28,7 @@ interface WhiteboardCanvasProps {
   isCollaborative?: boolean;
   template?: WhiteboardTemplate;
   onEndSession?: () => void;
+  whiteboardTitle?: string;
 }
 
 const PEN_TYPES = [
@@ -42,7 +43,8 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
   onShare,
   isCollaborative = false,
   template,
-  onEndSession
+  onEndSession,
+  whiteboardTitle
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
@@ -457,8 +459,13 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
       multiplier: 1
     });
 
+    // Use the whiteboardTitle prop for the filename, fallback to 'whiteboard'
+    let filename = (whiteboardTitle || 'whiteboard').trim();
+    if (!filename) filename = 'whiteboard';
+    // Remove illegal filename characters
+    filename = filename.replace(/[^a-zA-Z0-9-_ ]/g, '');
     const link = document.createElement('a');
-    link.download = 'whiteboard.png';
+    link.download = `${filename}.png`;
     link.href = dataURL;
     link.click();
   };
@@ -876,6 +883,137 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
     saveToHistory();
   };
 
+  // Zoom state
+  const [zoom, setZoom] = useState(1);
+  const minZoom = 0.2;
+  const maxZoom = 4.0;
+
+  // Helper: zoom to a point (x, y in canvas coordinates)
+  const zoomToPoint = (zoomTarget: number, point: { x: number; y: number }) => {
+    if (!fabricCanvasRef.current) return;
+    const canvas = fabricCanvasRef.current;
+    const oldZoom = canvas.getZoom();
+    const newZoom = Math.max(minZoom, Math.min(maxZoom, zoomTarget));
+    // Convert screen point to canvas point
+    const pt = new fabric.Point(point.x, point.y);
+    canvas.zoomToPoint(pt, newZoom);
+    setZoom(newZoom);
+  };
+
+  // Wheel zoom (Ctrl/Cmd + wheel) - zoom to cursor
+  useEffect(() => {
+    const canvasEl = canvasRef.current;
+    if (!canvasEl) return;
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (!fabricCanvasRef.current) return;
+        const rect = canvasEl.getBoundingClientRect();
+        const pointer = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+        const delta = -e.deltaY * 0.001;
+        const newZoom = Math.max(minZoom, Math.min(maxZoom, fabricCanvasRef.current.getZoom() + delta));
+        zoomToPoint(newZoom, pointer);
+      }
+    };
+    canvasEl.addEventListener('wheel', handleWheel, { passive: false });
+    return () => canvasEl.removeEventListener('wheel', handleWheel);
+  }, []);
+
+  // Pinch-to-zoom for touch devices - zoom to pinch center
+  useEffect(() => {
+    const canvasEl = canvasRef.current;
+    if (!canvasEl) return;
+    let lastDist: number | null = null;
+    let lastCenter: { x: number; y: number } | null = null;
+    const getDist = (touches: TouchList) => {
+      if (touches.length < 2) return 0;
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+    const getCenter = (touches: TouchList) => {
+      if (touches.length < 2) return { x: 0, y: 0 };
+      return {
+        x: (touches[0].clientX + touches[1].clientX) / 2 - canvasEl.getBoundingClientRect().left,
+        y: (touches[0].clientY + touches[1].clientY) / 2 - canvasEl.getBoundingClientRect().top,
+      };
+    };
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        lastDist = getDist(e.touches);
+        lastCenter = getCenter(e.touches);
+      }
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && lastDist && lastCenter) {
+        const dist = getDist(e.touches);
+        const center = getCenter(e.touches);
+        const delta = dist - lastDist;
+        if (Math.abs(delta) > 2) {
+          if (!fabricCanvasRef.current) return;
+          const currentZoom = fabricCanvasRef.current.getZoom();
+          let next = currentZoom + delta * 0.002;
+          next = Math.max(minZoom, Math.min(maxZoom, next));
+          zoomToPoint(next, center);
+          lastDist = dist;
+          lastCenter = center;
+        }
+      }
+    };
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) {
+        lastDist = null;
+        lastCenter = null;
+      }
+    };
+    canvasEl.addEventListener('touchstart', handleTouchStart);
+    canvasEl.addEventListener('touchmove', handleTouchMove);
+    canvasEl.addEventListener('touchend', handleTouchEnd);
+    return () => {
+      canvasEl.removeEventListener('touchstart', handleTouchStart);
+      canvasEl.removeEventListener('touchmove', handleTouchMove);
+      canvasEl.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
+  // Toolbar zoom buttons - zoom to center of viewport
+  const handleZoomIn = () => {
+    if (!fabricCanvasRef.current || !canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const center = { x: rect.width / 2, y: rect.height / 2 };
+    zoomToPoint(zoom + 0.1, center);
+  };
+  const handleZoomOut = () => {
+    if (!fabricCanvasRef.current || !canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const center = { x: rect.width / 2, y: rect.height / 2 };
+    zoomToPoint(zoom - 0.1, center);
+  };
+  const handleZoomReset = () => {
+    if (!fabricCanvasRef.current || !canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const center = { x: rect.width / 2, y: rect.height / 2 };
+    zoomToPoint(1, center);
+  };
+
+  // Apply zoom to fabric canvas
+  useEffect(() => {
+    if (fabricCanvasRef.current) {
+      fabricCanvasRef.current.setZoom(zoom);
+      // Center the canvas after zoom
+      const vpt = fabricCanvasRef.current.viewportTransform;
+      if (vpt) {
+        vpt[4] = (fabricCanvasRef.current.getWidth() / 2) * (1 - zoom);
+        vpt[5] = (fabricCanvasRef.current.getHeight() / 2) * (1 - zoom);
+        fabricCanvasRef.current.setViewportTransform(vpt);
+      }
+      fabricCanvasRef.current.renderAll();
+    }
+  }, [zoom]);
+
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
@@ -1036,6 +1174,34 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
           >
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="6" rx="2" /><path d="M6 7v6M10 7v6M14 7v6M18 7v6" /></svg>
           </button>
+          {/* Zoom Controls */}
+          <div className="flex items-center space-x-1 ml-4">
+            <button
+              onClick={handleZoomOut}
+              className="p-2 rounded bg-gray-100 hover:bg-gray-200 text-lg font-bold"
+              title="Zoom Out"
+              aria-label="Zoom Out"
+            >
+              –
+            </button>
+            <span className="w-12 text-center text-sm font-medium select-none">{Math.round(zoom * 100)}%</span>
+            <button
+              onClick={handleZoomIn}
+              className="p-2 rounded bg-gray-100 hover:bg-gray-200 text-lg font-bold"
+              title="Zoom In"
+              aria-label="Zoom In"
+            >
+              +
+            </button>
+            <button
+              onClick={handleZoomReset}
+              className="p-2 rounded bg-gray-50 hover:bg-gray-100 text-xs font-medium ml-1"
+              title="Reset Zoom"
+              aria-label="Reset Zoom"
+            >
+              Reset
+            </button>
+          </div>
         </div>
         {/* Action Buttons */}
         <div className="flex items-center space-x-2">
@@ -1073,7 +1239,7 @@ const WhiteboardCanvas: React.FC<WhiteboardCanvasProps> = ({
       </motion.div>
       {/* Canvas Container */}
       <div className="flex-1 bg-gray-50 p-4">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden relative">
+        <div className="bg-white rounded-2xl shadow-2xl border-4 border-blue-200 overflow-hidden relative" style={{ boxShadow: '0 8px 32px rgba(59,130,246,0.10), 0 1.5px 8px rgba(59,130,246,0.08)' }}>
           {/* Vanishing Guides Portal */}
           {guidesOverlay}
           {/* Virtual Ruler Portal */}

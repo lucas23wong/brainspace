@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import WhiteboardCanvas from '@/components/whiteboard/WhiteboardCanvas';
 import {
@@ -28,6 +28,13 @@ const WhiteboardEditorPage = () => {
   const [showCollaborators, setShowCollaborators] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
+  // Editable title/desc state
+  const [title, setTitle] = useState('Untitled Whiteboard');
+  const [desc, setDesc] = useState('Add a description');
+  const titleInputRef = useRef<HTMLInputElement>(null);
+  const descInputRef = useRef<HTMLInputElement>(null);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [editingDesc, setEditingDesc] = useState(false);
 
   // Fetch whiteboard data
   useEffect(() => {
@@ -37,12 +44,13 @@ const WhiteboardEditorPage = () => {
         if (response.ok) {
           const data = await response.json();
           setWhiteboard(data);
+          setTitle(data.title || 'Untitled Whiteboard');
+          setDesc(data.description || 'Add a description');
         } else {
-          // Fallback to mock data if API fails
           setWhiteboard({
             id: whiteboardId,
-            title: 'Project Brainstorming',
-            description: 'Ideas for the new product launch',
+            title: 'Untitled Whiteboard',
+            description: 'Add a description',
             content: null,
             template: null,
             collaborators: ['user1', 'user2', 'user3'],
@@ -50,12 +58,10 @@ const WhiteboardEditorPage = () => {
           });
         }
       } catch (error) {
-        console.error('Error fetching whiteboard:', error);
-        // Fallback to mock data
         setWhiteboard({
           id: whiteboardId,
-          title: 'Project Brainstorming',
-          description: 'Ideas for the new product launch',
+          title: 'Untitled Whiteboard',
+          description: 'Add a description',
           content: null,
           template: null,
           collaborators: ['user1', 'user2', 'user3'],
@@ -65,7 +71,6 @@ const WhiteboardEditorPage = () => {
         setIsLoading(false);
       }
     };
-
     fetchWhiteboard();
   }, [whiteboardId]);
 
@@ -127,9 +132,47 @@ const WhiteboardEditorPage = () => {
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">{whiteboard.title}</h1>
-              {whiteboard.description && (
-                <p className="text-sm text-gray-600">{whiteboard.description}</p>
+              {/* Editable Title */}
+              {editingTitle ? (
+                <input
+                  ref={titleInputRef}
+                  className="text-xl font-semibold text-gray-900 bg-white border-b border-blue-400 outline-none px-1"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  onBlur={() => setEditingTitle(false)}
+                  onKeyDown={e => { if (e.key === 'Enter') setEditingTitle(false); }}
+                  autoFocus
+                  maxLength={64}
+                />
+              ) : (
+                <h1
+                  className="text-xl font-semibold text-gray-900 cursor-pointer hover:underline"
+                  onClick={() => setEditingTitle(true)}
+                  title="Click to edit title"
+                >
+                  {title || 'Untitled Whiteboard'}
+                </h1>
+              )}
+              {/* Editable Description */}
+              {editingDesc ? (
+                <input
+                  ref={descInputRef}
+                  className="text-sm text-gray-600 bg-white border-b border-blue-200 outline-none px-1 mt-1"
+                  value={desc}
+                  onChange={e => setDesc(e.target.value)}
+                  onBlur={() => setEditingDesc(false)}
+                  onKeyDown={e => { if (e.key === 'Enter') setEditingDesc(false); }}
+                  autoFocus
+                  maxLength={128}
+                />
+              ) : (
+                <p
+                  className="text-sm text-gray-600 cursor-pointer hover:underline mt-1"
+                  onClick={() => setEditingDesc(true)}
+                  title="Click to edit description"
+                >
+                  {desc || 'Add a description'}
+                </p>
               )}
             </div>
           </div>
@@ -214,6 +257,7 @@ const WhiteboardEditorPage = () => {
           onShare={handleShare}
           isCollaborative={whiteboard.collaborators.length > 1}
           onEndSession={handleEndSession}
+          whiteboardTitle={title}
         />
       </div>
 
