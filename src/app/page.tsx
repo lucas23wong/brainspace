@@ -243,7 +243,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm w-full">
-          <p>&copy; 2024 BrainSpace. All rights reserved.</p>
+          <p>2025 @ BrainSpace. All Rights Reserved.</p>
         </div>
       </footer>
     </div>
